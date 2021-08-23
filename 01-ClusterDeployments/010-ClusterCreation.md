@@ -2,11 +2,13 @@
 
 ## Assumptions
 
-- This guide assumes you already have 3 Ubuntu 18.04 nodes ready, and you have SSH access to all of them;
+- This guide assumes you already have 3 [Ubuntu 18.04](https://releases.ubuntu.com/18.04.5/ubuntu-18.04.5-live-server-amd64.iso) nodes ready, and you have SSH access to all of them;
 
 - To keep it simple, it is assumed the nodes are on the same network and therefore can communicate with each other freely. 
 
 - We are going to deploy a 3 Node cluster, with a single Master Node. Not the suggested architecture to be deployed in production, but is the topology that you will find in the CKA exam. 
+
+- We are preparing for the CKA version 1.21 Exam.
 
 ## Steps
 
