@@ -19,6 +19,10 @@
 The bellow steps need to be performed on all 3 Nodes. 
 
 ```bash
+# Disable SWAP
+sudo swapoff -a
+# Don't forget to comment the entry in fstab.
+
 # Allow iptables to see bridged traffic
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 br_netfilter
@@ -51,6 +55,7 @@ echo \
   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
+sudo apt-get update
 sudo apt-get install containerd.io
 
 # Configure Containerd
@@ -73,7 +78,7 @@ sudo sysctl --system
 sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
 
-sudo systemctl enable --now containerd
+sudo systemctl restart containerd
 
 ## Install kubeadm, kubelet and kubectl
 sudo apt-get update
@@ -84,7 +89,7 @@ sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://pack
 echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 sudo apt-get update
-sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-get install -y kubelet=1.21.4-00 kubeadm=1.21.4-00 kubectl=1.21.4-00
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
@@ -93,7 +98,7 @@ To do this follow the bellow indications:
 
 ```bash
 # On the Master Node start by deploying the cluster:
-sudo kubeadm init --control-plane-endpoint "MASTER_IP:MASTER_PORT" --apiserver-advertise-address "MASTER_IP:MASTER_PORT" --pod-network-cidr "192.168.0.0/16" --upload-certs
+sudo kubeadm init --control-plane-endpoint "MASTER_IP:MASTER_PORT" --apiserver-advertise-address "MASTER_IP" --pod-network-cidr "192.168.0.0/16" --upload-certs
 
 # After the successful completion of the above command, a similar bellow output will be returned.
 # Use this output to booth configure your kubectl tool, and to grab the command to deploy on the other 2 Nodes. 
